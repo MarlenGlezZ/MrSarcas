@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  bot:
+    build: .
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+    volumes:
+      - ./data:/app/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os, requests; exit(0 if requests.get(f'https://api.telegram.org/bot{os.environ[\"TELEGRAM_TOKEN\"]}/getMe').status_code == 200 else 1)"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
